@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastro</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../styles/cadastro.css">
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script type="module" src="../Controllers/cadastro/cadastroHandler.js" defer></script>
+</head>
+
+<body>
+    <div class="div-mensagem-alerta">
+        <p class="mensagem">
+           
+        </p>
+    </div>
+    <div class="container">
+        
+        <form class="container-form">
+            <h1 class="subtitle-register">Registre-se</h1>
+
+            <div class="input-group">
+                <label for="cpf">CPF do Aluno</label>
+                <input type="text" id="cpf" name="cpf" placeholder="Digite o CPF">
+            
+                <label for="nome">Nome do Aluno</label>
+                <input type="text" id="nome" name="nome" placeholder="Digite o nome completo">
+            
+                <label for="telefone">Telefone</label>
+                <input type="tel" name="tel" id="telefone" placeholder="Digite seu telefone">
+            
+                <label for="email">Email</label>
+                <input type="email" name="email" id="email" placeholder="Digite seu email: example@example.com">
+            </div>
+            
+            <div class="imc-group">
+                <label for="peso"><p>Peso</p></label>
+                <input type="number" id="peso" name="peso" placeholder="Ex: 70 (KG)" min="1">
+                <label for="altura"><p>Altura</p></label>
+                <input type="number" id="altura" name="altura" placeholder="Ex: 175 (cm)" min="1">
+            </div>
+            
+            <div class="date-group">
+                <label for="aniversario">Data de Nascimento</label>
+                <input type="date" id="aniversario" name="aniversario">
+            </div>
+
+            <div class="gender-group">
+                    <label for="genero-masculino"><p>Masculino</p></label>
+                    <input type="radio" name="genero" id="genero-masculino" class="genero" value="M" checked>
+
+                    <label for="genero-feminino"><p>Feminino</p></label>
+                    <input type="radio" name="genero" id="genero-feminino" class="genero" value="F">
+            </div>
+                    
+            
+            <button class="btnCadastrar">Submeter</button>
+            </form>
+        
+
+            <div class="toggle">
+                <h1>Seja bem-vindo ao sistema FitLife!</h1>
+                <p>Registre-se para poder fazer o acompanhamento diário dos treinos.</p>
+                <h3>Já é cadastrado?<br> Clique abaixo para buscar seu perfil!</h3>
+                <button class="hidden" id="search-btn">Buscar</button>
+            </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,136 @@
+* {
+    font-family: "Montserrat", sans-serif;
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background-color: #c9d6ff;
+    background: linear-gradient(to right, #e2e2e2, #c9d6ff);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;  /*???*/
+}
+
+.container {
+    background-color: #fff;
+    border-radius: 30px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.35);
+    overflow: auto; /*???*/
+    width: 1028px;
+    height: 678px;
+    max-width: 100%;
+    min-height: 480px;
+    display: flex;
+}
+
+h1 {
+    font-weight: bolder;
+    font-size: 1.8rem;
+    margin-bottom: 20px;
+}
+
+h3 {
+    font-size: 0.75rem;
+    padding: 0.5rem;
+    font-weight: normal;
+    color: #b4b0b0;
+}
+
+p {
+    font-size: 16px;
+    line-height: 20px;
+    letter-spacing: 0.3px;
+    margin: 20px 0;
+}
+
+input {
+    background-color: #eee;
+    border: none;
+    margin: 8px 0;
+    padding: 10px 15px;
+    font-size: 13px;
+    border-radius: 0.5rem;
+    width: 100%; 
+    outline: none;
+}
+
+input:focus {
+    box-shadow: 0px 5px 10px #5c6bc018;
+}
+
+button {
+    background-color: #512da8;
+    color: #fff;
+    font-size: 12px;
+    padding: 10px 45px;
+    border: 1px solid transparent;
+    border-radius: 0.5rem;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    margin-top: 10px;
+    cursor: pointer;
+}
+
+.container-form {
+    background-color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    padding: 40px;
+    width: 50%;
+}
+
+.imc-group {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    margin-bottom: 1rem;
+}
+
+.imc-group input {
+    width: 30%;
+}
+
+.date-group {
+    width: 100%;
+}
+
+.gender-group{
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.gender-group input { 
+    width: 25px;
+}
+
+button:hover {
+    transform: scale(1.025);
+}
+
+.toggle {
+    background: linear-gradient(to right, #5c6bc0, #512da8);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    padding: 30px;
+    text-align: center;
+    width: 50%;
+    border-radius: 150px 0 0 100px;
+    color: #fff;
+}
+
+#search-btn {
+    background-color: transparent;
+    border-color: #fff;
+}
+#search-btn:hover {
+    background-color: #dddbe015;
+}
