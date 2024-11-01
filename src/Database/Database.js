@@ -1,7 +1,8 @@
 const oracledb = require("oracledb");
 const dotenv = require("dotenv");
 const {validarCPF} = require("../Database/utils/validarCPF.js")
-dotenv.config();
+const PATH = require("node:path")
+dotenv.config({ path: PATH.resolve(__dirname, "../.env") });
 
 class Database {
   connection = null;
@@ -16,7 +17,6 @@ class Database {
 
     try {
       this.connection = await oracledb.getConnection(dbConfig);
-      console.log("Conexão efetuada com sucesso", dbConfig)
     } catch (err) {
       console.error(`Erro ao tentar se conectar com o banco de dados: ${err}`);
       this.connection = null;
@@ -39,16 +39,38 @@ class Database {
       return false;
     }
 
+    const error = {
+      attribute: null,
+      errorMessage: ""
+    }
+
     try {
       const cpfCheckResult = await dbConnection.execute(`SELECT COUNT(*) AS count FROM Clientes WHERE cpf = :cpf`, [novoCliente.cpf]);
       const cpfExists = cpfCheckResult.rows[0][0] > 0;
+      const error = {
+        attribute: null,
+        errorMessage: ""
+      }
 
       if (cpfExists) {
-        throw new Error('CPF já cadastrado.');
+        error.attribute = "cpf"
+        error.errorMessage = "CPF já cadastrado."
+        return error
       }
 
       if (!this.validar(novoCliente.cpf)) {
-        throw new Error(`CPF inválido.`)
+        error.attribute = "cpf"
+        error.errorMessage = "CPF inválido."
+        return error
+      }
+
+      const emailCheckResult = await dbConnection.execute(`SELECT COUNT(*) AS count FROM Clientes WHERE email = :email`, [novoCliente.email]);
+      const emailExists = emailCheckResult.rows[0][0] > 0;
+     
+      if (emailExists) {
+        error.attribute = "email"
+        error.errorMessage = "Email já cadastrado."
+        return error
       }
 
       const binds = {
@@ -63,10 +85,10 @@ class Database {
       };
 
       await dbConnection.execute(query, binds, { autoCommit: true });
-      return true;
+      return true; //? Retorna true se a inserção no banco de dados foi bem-sucedida
     } catch (err) {
       console.error(`Erro ao tentar inserir cliente: ${err.message}`);
-      return false;
+      return false //! Retorna false em caso de erro do banco de dados
     }
   }
 
