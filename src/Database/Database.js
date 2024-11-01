@@ -126,5 +126,11 @@ class Database {
 
 // Cria uma instância da classe Database e inicializa a conexão
 const database = new Database();
-database.init(); // Chama o método init para estabelecer a conexão
+// Chama o método init para estabelecer a conexão
+database.init().then(() => {
+  console.log("Conexão com o banco de dados estabelecida.")
+}).catch(err => {
+  console.error("Falha ao conectar com o banco de dados: ", err.message)
+}); 
+
 module.exports = { database }; // Exporta a instância do banco de dados
