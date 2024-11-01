@@ -63,6 +63,10 @@ class Database {
       const isEmailUnique = await this.isEmailUnique(novoCliente.email);
       if (!isEmailUnique) return { attribute: "email", errorMessage: "Email já cadastrado." };
 
+      // Verifica se o número de telefone é único
+      const isPhoneUnique = await this.isPhoneUnique(novoCliente.phone);
+      if (!isPhoneUnique) return { attribute: "email", errorMessage: "Esse número de telefone já está sendo utilizado"}
+
       // Se todas as validações passarem, insere o cliente
       return await this.insertClient(query, novoCliente);
     } catch (err) {
@@ -90,6 +94,15 @@ class Database {
     );
     // Retorna verdadeiro se não houver registros com o mesmo email
     return result.rows[0][0] === 0;
+  }
+
+  async isPhoneUnique(phone) {
+    const result = await this.connection.execute(
+      `SELECT COUNT(*) AS count FROM Clientes WHERE telefone = :phone`,
+      [phone]
+    )
+    // Retorna verdadeiro se não houver registros com o mesmo telefone
+    return results.rows[0][0] === 0;
   }
 
   // Método para inserir um novo cliente no banco de dados
