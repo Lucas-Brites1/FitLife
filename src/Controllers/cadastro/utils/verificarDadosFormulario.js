@@ -12,8 +12,6 @@ export function verificarDadosFormulario(Cliente) { //! Cliente = objeto
   return DadosInvalidos
 }
 
-
-
 //? Cliente, ex:
 /*
 const Cliente = {

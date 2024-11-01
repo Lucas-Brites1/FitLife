@@ -14,16 +14,24 @@ app.use(cors()); // Middleware de API que permite todas as requisições indepen
 app.use(express.json()); // Middleware que permite que as requisições lidem com dados do tipo JSON
 app.use(loggerMiddleware);
 
-// Configurações de conexão com o banco de dados Oracle
-
 // Método GET para verificar se a API está rodando
 app.get("/teste", function(req, res) {
   return res.status(200).send('certo');
 });
 
+// Método GET para pegar todos os clientes cadastrados no sistema
+app.get("/api/clientes", async (req, res) => {
+  try {
+    const clientes = await DB.executeSelect({query: "SELECT * FROM Clientes", arrayParametros: []})
+    return res.status(200).json({"Clientes-Salvos": clientes.rows})
+  } catch(err) {
+    return res.status(500).send(err)
+  }
+})
+
 // Método POST para adicionar um novo cliente ao banco de dados Oracle
 app.post("/api/clientes", async (req, res) => {
-  const novoCliente = req.body;
+  const { cpf, nome, telefone, email, peso, altura, data_nascimento, sexo } = req.body;
   const query = `
     INSERT INTO Clientes (cpf, nome, telefone, email, peso, altura, data_nascimento, sexo)
     VALUES (:cpf, :nome, :telefone, :email, :peso, :altura, :data_nascimento, :sexo)
@@ -31,9 +39,8 @@ app.post("/api/clientes", async (req, res) => {
   
   try {
     const executeResponseDB = await DB.executeInsertion({
-      dbConnection: DB.connection,
       query: query,
-      novoCliente: novoCliente,
+      novoCliente: {cpf, nome, telefone, email, peso, altura, data_nascimento, sexo},
     });
 
     if(executeResponseDB && typeof executeResponseDB === "object"){

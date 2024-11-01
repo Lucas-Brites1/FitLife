@@ -1,6 +1,7 @@
-import { get, getRadio } from "../cadastro/utils/getInfo.js"
-import { verificarDadosFormulario } from "./utils/verificarDadosFormulario.js"
+import { get, getRadio } from "../cadastro/utils/getInfo.js"; // Importa funções para obter informações dos campos do formulário
+import { verificarDadosFormulario } from "./utils/verificarDadosFormulario.js"; // Importa a função para verificar os dados do formulário
 
+// Objeto Cliente que armazena as informações do cliente
 const Cliente = {
   cpf: null,
   nome: null,
@@ -10,39 +11,51 @@ const Cliente = {
   altura: null,
   data_nascimento: null,
   sexo: null
-}
+};
 
+// Função que é chamada quando o formulário é submetido
 async function submitForm(ev) {
-  // evento faz referência ao formulário que estamos submetendo
-  // método preventDefault() faz o formulário não ter o comportamento padrão de atualizar a página quando é submetido, dessa forma não perdemos os valores inseridos
-  ev.preventDefault()
-  Cliente.cpf = get("cpf", "id").value
-  Cliente.nome = get("nome", "id").value
-  Cliente.telefone = get("telefone", "id").value
-  Cliente.email = get("email", "id").value
-  Cliente.peso = get("peso", "id").value
-  Cliente.altura = get("altura", "id").value
-  Cliente.data_nascimento = get("aniversario", "id").value
-  Cliente.sexo = getRadio()
+  // 'ev' é o evento de submissão do formulário
+  // preventDefault() evita o comportamento padrão de atualizar a página ao submeter o formulário
+  ev.preventDefault();
+  
+  // Obtém os valores dos campos do formulário e os armazena no objeto Cliente
+  Cliente.cpf = get("cpf", "id").value;
+  Cliente.nome = get("nome", "id").value;
+  Cliente.telefone = get("telefone", "id").value;
+  Cliente.email = get("email", "id").value;
+  Cliente.peso = get("peso", "id").value;
+  Cliente.altura = get("altura", "id").value;
+  Cliente.data_nascimento = get("aniversario", "id").value;
+  Cliente.sexo = getRadio(); // Obtém o valor do campo de sexo selecionado
 
-  const verificarNull = verificarDadosFormulario(Cliente)
-  if(verificarNull.length > 0) {
+  // Verifica se há campos nulos ou inválidos no objeto Cliente
+  const verificarNull = verificarDadosFormulario(Cliente);
+  if (verificarNull.length > 0) {
+    // Se houver campos inválidos, cria uma string com os dados inválidos
     let stringDadosInvalidos = verificarNull.join(", ");
+    // Exibe uma mensagem com os dados inválidos
     get("mensagem", "class").innerHTML = `Dados inválidos <p class="dados-invalidos">[ ${stringDadosInvalidos} ]<p>`;
-    return
+    return; // Retorna para interromper a execução se houver dados inválidos
   }
   
   try {
-    const resposta = await axios.post("http://localhost:8989/api/clientes", Cliente)
-    get("mensagem", "class").innerHTML = resposta.data
-  } catch(error) {
-    if(error.response && error.response.data) {
-      console.log(error)
-      get("mensagem", "class").innerHTML = error.response.data //! pega o erro de status 400
+    // Faz uma requisição POST para enviar os dados do cliente para a API
+    const resposta = await axios.post("http://localhost:8989/api/clientes", Cliente);
+    // Exibe a resposta da API na interface
+    get("mensagem", "class").innerHTML = resposta.data;
+  } catch (error) {
+    // Trata erros que possam ocorrer durante a requisição
+    if (error.response && error.response.data) {
+      console.log(error); // Loga o erro no console
+      // Exibe a mensagem de erro recebida da API
+      get("mensagem", "class").innerHTML = error.response.data; // Captura a mensagem do erro de status 400
     } else {
-      get("mensagem", "class").innerHTML = "Erro ao enviar dados, tente novamente." //! pega o erro de status 500
+      // Exibe uma mensagem genérica em caso de erro de servidor
+      get("mensagem", "class").innerHTML = "Erro ao enviar dados, tente novamente."; // Captura o erro de status 500
     }
   }
 }
 
-get("btnCadastrar", "class").addEventListener("click", submitForm)
+// Adiciona um listener para o evento de clique no botão de cadastrar, que chama a função submitForm
+get("btnCadastrar", "class").addEventListener("click", submitForm);
