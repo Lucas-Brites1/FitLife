@@ -102,7 +102,7 @@ class Database {
       [phone]
     )
     // Retorna verdadeiro se não houver registros com o mesmo telefone
-    return results.rows[0][0] === 0;
+    return result.rows[0][0] === 0;
   }
 
   // Método para inserir um novo cliente no banco de dados
