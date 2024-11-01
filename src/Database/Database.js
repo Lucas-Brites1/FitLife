@@ -64,8 +64,8 @@ class Database {
       if (!isEmailUnique) return { attribute: "email", errorMessage: "Email já cadastrado." };
 
       // Verifica se o número de telefone é único
-      const isPhoneUnique = await this.isPhoneUnique(novoCliente.phone);
-      if (!isPhoneUnique) return { attribute: "email", errorMessage: "Esse número de telefone já está sendo utilizado"}
+      const isPhoneUnique = await this.isPhoneUnique(novoCliente.telefone);
+      if (!isPhoneUnique) return { attribute: "telefone", errorMessage: "Esse número de telefone já está sendo utilizado"}
 
       // Se todas as validações passarem, insere o cliente
       return await this.insertClient(query, novoCliente);
