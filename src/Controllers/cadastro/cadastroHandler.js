@@ -44,6 +44,7 @@ async function submitForm(ev) {
     const resposta = await axios.post("http://localhost:8989/api/clientes", Cliente);
     // Exibe a resposta da API na interface
     get("mensagem", "class").innerHTML = resposta.data;
+    console.log(resposta)
   } catch (error) {
     // Trata erros que possam ocorrer durante a requisição
     if (error.response && error.response.data) {
