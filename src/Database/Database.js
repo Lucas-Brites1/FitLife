@@ -58,8 +58,8 @@ class Database {
 
   async insertClient(novoCliente) {
     try {
-      const cliente = await Cliente.create(novoCliente); // Cria o novo cliente usando o modelo Cliente
-      return cliente; // Retorna o cliente criado
+      await Cliente.create(novoCliente); // Cria o novo cliente usando o modelo Cliente
+      return true; 
     } catch (err) {
       console.error(`Erro ao tentar inserir cliente: ${err.message}`);
       return false; // Retorna falso em caso de erro

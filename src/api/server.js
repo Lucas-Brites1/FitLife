@@ -38,8 +38,8 @@ app.post("/api/clientes", async (req, res) => {
 
   try {
     const executeResponseDB = await DB.executeInsertion(novoCliente);
-
-    if (executeResponseDB && typeof executeResponseDB === "object" && "errorMessage" in executeResponseDB) {
+   
+    if (executeResponseDB && typeof executeResponseDB === "object") {
       return res.status(400).send(executeResponseDB.errorMessage);
     }
 
