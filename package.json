@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "server": "cd ./src/api && node server.js"
+    "server": "cd ./src/api && node server.js",
+    "db": "cd ./src/Database && node Sequelize.js"
   },
   "keywords": [],
   "author": "",
@@ -17,7 +18,9 @@
   "dependencies": {
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",
-    "oracledb": "^6.6.0"
+    "oracledb": "^6.6.0",
+    "pg": "^8.13.1",
+    "sequelize": "^6.37.5"
   },
   "type": "commonjs"
 }
