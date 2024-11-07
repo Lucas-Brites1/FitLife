@@ -70,7 +70,7 @@ class Database {
     try {
       const cliente = await Cliente.findOne({ where: {cpf} })
       if (!cliente) {
-        return { message: "Cliente não encontrado!" }
+        return false
       }
 
       return cliente;

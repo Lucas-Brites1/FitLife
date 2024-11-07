@@ -1,5 +1,8 @@
-import { get, getRadio } from "../cadastro/utils/getInfo.js"; // Importa funções para obter informações dos campos do formulário
-import { verificarDadosFormulario } from "./utils/verificarDadosFormulario.js"; // Importa a função para verificar os dados do formulário
+import { get, getRadio } from "/Controllers/utils/getInfo.js"; // Importa funções para obter informações dos campos do formulário
+import { verificarDadosFormulario } from "/Controllers/utils/verificarDadosFormulario.js"; // Importa a função para verificar os dados do formulário
+import Redirect from "/Controllers/utils/redirect.js";
+
+Redirect(get("search-btn", "id"), "http://localhost:8989/page/busca")
 
 // Objeto Cliente que armazena as informações do cliente
 const Cliente = {
@@ -16,7 +19,7 @@ const Cliente = {
 // Função que é chamada quando o formulário é submetido
 async function submitForm(ev) {
   // 'ev' é o evento de submissão do formulário
-  // preventDefault() evita o comportamento padrão de atualizar a página ao submeter o formulário
+  // preventDefault() evita o comportamento padrão de atualizar a página ao clicar para enviar o formulário
   ev.preventDefault();
   
   // Obtém os valores dos campos do formulário e os armazena no objeto Cliente
@@ -60,3 +63,4 @@ async function submitForm(ev) {
 
 // Adiciona um listener para o evento de clique no botão de cadastrar, que chama a função submitForm
 get("btnCadastrar", "class").addEventListener("click", submitForm);
+
