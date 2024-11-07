@@ -117,3 +117,44 @@ input:focus {
 button:hover {
     transform: scale(1.025);
 }
+
+h3 {
+    font-size: 0.75rem;
+    padding: 0.5rem;
+    font-weight: normal;
+    color: #b4b0b0;
+}
+
+.div-mensagem-alerta {
+    position: absolute;
+    width: 30vw;
+    height: 10%;
+    background-color: #4c00ff02;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    bottom: 3vh;
+    border-radius: .3rem;
+    box-shadow: 2px 10px 10px rgba(0, 0, 0, 0.226);
+}
+
+#search-btn {
+    background-color: transparent;
+    border-color: #fff;
+}
+#search-btn:hover {
+    background-color: #dddbe015;
+}
+
+.dados-invalidos {
+    text-align: center;
+    font-weight: 400;
+    font-size: .9rem;
+    color: red;
+}
+
+.mensagem {
+    font-size: 1.1rem;
+    font-weight: bold;
+    text-align: center;
+}

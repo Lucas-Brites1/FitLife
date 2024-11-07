@@ -6,16 +6,24 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Afacad+Flux:wght@100..1000&display=swap" rel="stylesheet">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Menu</title>
+    <title>Busca</title>
     <link rel="stylesheet" href="../Styles/buscar.css">
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script type="module" src="../Controllers/busca/buscaHandler.js" defer></script>
 </head>
 <body>
+    <div class="div-mensagem-alerta">
+        <p class="mensagem">
+           Insira o CPF para busca
+        </p>
+    </div>
     <div class="container">
         <div class="panel">
             <h1>Bem-vindo à Academia FitLife!</h1>
             <p>Transforme sua vida através do movimento.
                 Cadastre-se ou gerencie seus dados de forma fácil e rápida.</p>
-            <button>Cadastrar</button>
+            <h3>Não é cadastrado ainda?<br>Faça o cadastro clicando no botão abaixo</h3>
+            <button id="search-btn">Cadastrar</button>
         </div>
         <div class="form-container">
             <form class="form-buscar">

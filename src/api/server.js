@@ -30,6 +30,18 @@ app.get("/api/clientes", async (req, res) => {
   }
 });
 
+app.get("/api/cliente/:cpf", async (req, res) => {
+  const CPF = req.params.cpf;
+
+  try {
+    const cliente = await DB.searchClient(CPF);
+    return res.send(cliente);
+  } catch(err) {
+    console.error(err.message);
+    return res.status(500).send(err)
+  }
+})
+
 // Método POST para adicionar um novo cliente ao banco de dados
 app.post("/api/clientes", async (req, res) => {
   const { cpf, nome, telefone, email, peso, altura, data_nascimento, sexo } = req.body;

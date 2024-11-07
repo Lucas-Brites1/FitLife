@@ -65,6 +65,19 @@ class Database {
       return false; // Retorna falso em caso de erro
     }
   }
+
+  async searchClient(cpf) {
+    try {
+      const cliente = await Cliente.findOne({ where: {cpf} })
+      if (!cliente) {
+        return { message: "Cliente não encontrado!" }
+      }
+
+      return cliente;
+    } catch(err) {
+      throw new Error( "Erro ao buscar cliente.")
+    }
+  }  
 }
 
 const database = new Database();
