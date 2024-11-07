@@ -78,6 +78,20 @@ class Database {
       throw new Error( "Erro ao buscar cliente.")
     }
   }  
+
+  async deleteAll(pass) {
+    try {
+      if (pass != process.env.passDel) return false
+      await Cliente.destroy({
+        where: {},
+        truncate: true,
+      })
+      return true
+    } catch(err) {
+      console.error(err);
+      return false;
+    }
+  }
 }
 
 const database = new Database();

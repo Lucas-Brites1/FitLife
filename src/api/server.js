@@ -42,6 +42,16 @@ app.get("/api/cliente/:cpf", async (req, res) => {
   }
 })
 
+app.get("/api/clientes/delete/all/:pass", async (req, res) => {
+  const password = req.params.pass
+  try {
+    await DB.deleteAll(password)
+    return res.status(200).json({mensagem: "Todos os registros foram limpos com sucesso."})
+  } catch (err) {
+    return res.status(500).json({mensagem: err})
+  }
+})
+
 // Método POST para adicionar um novo cliente ao banco de dados
 app.post("/api/clientes", async (req, res) => {
   const { cpf, nome, telefone, email, peso, altura, data_nascimento, sexo } = req.body;
