@@ -8,10 +8,12 @@ dotenv.config({ path: PATH.resolve(__dirname, "../.env") });
 
 class Database {
   Cliente = Cliente;
+  isConnected = false
   async init() {
     try {
       await sequelize.authenticate();
       console.log("Conexão com o banco de dados estabelecida.");
+      this.isConnected = true
     } catch (err) {
       console.error(`Erro ao tentar se conectar com o banco de dados: ${err}`);
     }

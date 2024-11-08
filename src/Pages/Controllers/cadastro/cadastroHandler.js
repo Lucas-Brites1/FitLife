@@ -44,7 +44,7 @@ async function submitForm(ev) {
   
   try {
     // Faz uma requisição POST para enviar os dados do cliente para a API
-    const resposta = await axios.post("http://localhost:8989/api/clientes", Cliente);
+    const resposta = await axios.post("http://localhost:8989/clientes/submit", Cliente);
     // Exibe a resposta da API na interface
     get("mensagem", "class").innerHTML = resposta.data;
     console.log(resposta)

@@ -53,6 +53,11 @@ body {
 
 .form-container {
     width: 50%;
+    transition: width 1s ease;
+}
+
+.form-container.infos {
+    width: 100%;
 }
 
 .container form {
@@ -95,7 +100,13 @@ body {
     background: linear-gradient(to right, #5c6bc0, #512da8);
     color: #fff;
     border-radius: 0 150px 100px 0;
+    transition: width .5s ease-in-out;
 }
+
+.panel.infos {
+    display: none;
+}
+
 
 .panel h1 {
     font-weight: bolder;

@@ -6,6 +6,7 @@ dotenv.config({ path: PATH.resolve(__dirname, "../.env") });
 
 const { database } = require("../Database/Database.js");
 const { loggerMiddleware } = require("./middleware/logger");
+const { checkDatabaseConnection } = require("./middleware/checkDatabaseConnection.js");
 
 // Instanciando nosso servidor HTTP usando framework EXPRESS
 const app = express();
@@ -21,12 +22,11 @@ app.use(express.json()); // Garante que o corpo de uma requisição post seja tr
 // Middleware responsável por servir arquivos estáticos (como HTML, CSS, imagens) da pasta "../Pages".
 // Isso permite que o Express sirva arquivos diretamente para o cliente sem necessidade de lógica adicional.
 app.use(express.static(PATH.join(__dirname,"../Pages"))); 
-// Middleware que serve arquivos estáticos da pasta "../Controllers" quando acessados via URL "/Controllers".
-// Isso permite que o Express forneça os arquivos dentro dessa pasta (como JavaScript) para o cliente.
-app.use("/Controllers", express.static(PATH.join(__dirname, "../Controllers")));
-app.use("/Controllers", express.static(PATH.join(__dirname, "../Controllers")))
 // Middleware que fizemos para mostrar os logs de requisições
 app.use(loggerMiddleware);
+// Middleware que fizemos (checkDatabaseConnection) garante que o banco de dados esteja conectado antes de que qualquer requisição dependa dele. Assim, se DB.isConnected for falso..
+// ..retorna uma resposta de status 503 que significa `Service Unavaible` (serviço indisponível), envia o arquivo html 503.html para ser renderizado e impede que o restante do código seja executado
+app.use(checkDatabaseConnection(DB))
 
 app.get("/teste", (req, res) => {
   return res.status(200).json({"mensagem": "API rodando."})
@@ -52,7 +52,7 @@ app.get("/page/cadastro", (req, res) => {
 })
 
 // Método GET para retornar todos os clientes registrados no banco de dados
-app.get("/api/clientes", async (req, res) => {
+app.get("/clientes", async (req, res) => {
   try {
     const clientes = await DB.Cliente.findAll(); // Retorna todos os clientes da tabela Cliente "select * from Clientes"
     if(clientes.length > 0) {
@@ -70,7 +70,7 @@ app.get("/api/clientes", async (req, res) => {
 // A função tenta encontrar o cliente no banco de dados usando o CPF fornecido e retorna o Cliente como objeto javascript caso consiga achar no banco de dados e false caso não ache
 // Se algum erro acontecer durante a busca, um erro será lançado e o será mostrado no console por fim a API retornará uma resposta com status(500) <ERRO NO SERVIDOR> e enviará o erro respectivo como mensagem
 // Olhar na pasta Database/Database.js a função searchClient para ver como está implementada em caso de dúvida
-app.get("/api/cliente/:cpf", async (req, res) => {
+app.get("/cliente/:cpf", async (req, res) => {
   const CPF = req.params.cpf;
   try {
     const cliente = await DB.searchClient(CPF);
@@ -86,7 +86,7 @@ app.get("/api/cliente/:cpf", async (req, res) => {
 // Se tudo deu certo na validação dos campos do formulário no /Controllers/cadastro/cadastroHandler.js a função executeInsertion da nossa Classe do banco de dados será chamada
 // executeInsertion é uma função que espera como parametro um objeto do tipo Cliente se tudo estiver correto o cliente será cadastrado corretamente no banco de dados
 // verificar a função executeInsertion no diretorio /Database/Database.js/executeInsertion e também verificar a tabela Cliente para ver os campos desta tabela em /Database/models/Cliente.js
-app.post("/api/clientes", async (req, res) => {
+app.post("/clientes/submit", async (req, res) => {
   const { cpf, nome, telefone, email, peso, altura, data_nascimento, sexo } = req.body;
 
   const novoCliente = { cpf, nome, telefone, email, peso, altura, data_nascimento, sexo };
@@ -104,7 +104,7 @@ app.post("/api/clientes", async (req, res) => {
   }
 });
 
-app.get("/api/clientes/delete/all/:pass", async (req, res) => {
+app.get("/clientes/delete/all/:pass", async (req, res) => {
   const password = req.params.pass
   try {
     const deleted = await DB.deleteAll(password)
@@ -119,5 +119,5 @@ app.get("/api/clientes/delete/all/:pass", async (req, res) => {
 
 // Inicializa o servidor na porta especificada
 app.listen(PORT, () => {
-  console.log("Servidor rodando em localhost:", PORT);
+  console.log(`Server: http://localhost:${PORT}/`);
 });

@@ -11,19 +11,19 @@ function loggerMiddleware(req, res, next) {
   // Verifica se há parâmetros na URL da requisição
   if (Object.keys(req.params).length > 0) {
     // Se existirem parâmetros, imprime no console
-    console.log(`URL Parameters: ${JSON.stringify(req.params)}`);
+    console.log(`\nURL Parameters: ${JSON.stringify(req.params)}`);
   }
 
   // Verifica se o status da resposta é maior ou igual a 400 (erro do cliente)
-  if (res.statusCode >= 400) {
+  if (res.statusCode >= 400 && res.statusCode < 500) {
     // Se houver erro do cliente (4xx), imprime a mensagem de erro
-    console.error(`Erro ao processar requisição: ${res.statusCode}`);
+    console.error(`\nErro ao processar requisição: ${res.statusCode}`);
   }
 
   // Verifica se o status da resposta é maior ou igual a 500 (erro do servidor)
   if (res.statusCode >= 500) {
     // Se houver erro no servidor (5xx), imprime a mensagem de erro
-    console.error(`Erro interno do servidor: ${res.statusCode}`);
+    console.error(`\nErro interno do servidor: ${res.statusCode}`);
   }
 
   // Verifica se a requisição foi um POST
@@ -41,11 +41,11 @@ function loggerMiddleware(req, res, next) {
 
     // Exibe o tempo que levou para processar a requisição, o método, a URL e o status da resposta
     // Além de imprimir os dados enviados no caso de POST
-    console.log(`[${timePassed}ms] (${req.method} ${req.url}) -> ${res.statusCode}`);
+    console.log(`\n[${timePassed}ms] (${req.method} ${req.url}) -> ${res.statusCode}`);
     console.table(formattedData);
   } else {
     // Para outros métodos (GET, PUT, DELETE), apenas imprime a requisição e o status
-    console.log(`[${timePassed}ms] (${req.method} ${req.url}) -> ${res.statusCode}`);
+    console.log(`\n[${timePassed}ms] (${req.method} ${req.url}) -> ${res.statusCode}`);
   }
 }
 
