@@ -1,14 +1,15 @@
 const dotenv = require("dotenv");
 const PATH = require("node:path");
 const { validarCPF } = require("../Database/utils/validarCPF.js");
-const { Cliente } = require("./models/Cliente.js");
+const { Cliente, Totem } = require("./Models.js");
 const { sequelize } = require("./Sequelize.js");
 
 dotenv.config({ path: PATH.resolve(__dirname, "../.env") });
-
 class Database {
-  Cliente = Cliente;
+  TableClient = Cliente
+  TableTotem = Totem
   isConnected = false
+
   async init() {
     try {
       await sequelize.authenticate();
@@ -58,6 +59,30 @@ class Database {
     return count === 0; // Retorna verdadeiro se não houver registros com o mesmo telefone
   }
 
+  async acessControl(cpf) {
+    try {
+      const cliente =  await this.searchClient(cpf)
+      if (!cliente) {
+        throw Error("Cliente não encontrado")
+      }
+
+      let date = new Date()
+      let formattedDate = date.toISOString().split("T")[0] // YYYY-MM-DD today.toISOString() ->'2024-11-12T19:53:11.150Z'.split("T") -> ["2024-11-12", "T19:53:11.150Z"] 
+
+      // SELECT * FROM TOTEM WHERE CLIENTE = CLIENTEID
+      let registros = await Totem.findAll({ where: { cliente: cliente.id}})
+
+      Totem.create({
+        cliente: cliente.id, // chave estrangeira ID
+        data: formattedDate,
+        horario_entrada: date.getHours()
+      })
+
+    } catch (err) {
+      console.error(err)
+    }
+  }
+
   async insertClient(novoCliente) {
     try {
       await Cliente.create(novoCliente); // Cria o novo cliente usando o modelo Cliente
@@ -94,6 +119,7 @@ class Database {
       return false;
     }
   }
+
 }
 
 const database = new Database();

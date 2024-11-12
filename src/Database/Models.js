@@ -1,13 +1,17 @@
 const { DataTypes, Model } = require("sequelize");
-const { sequelize } = require("../Sequelize.js");
+const { sequelize } = require("./Sequelize.js");
 
 class Cliente extends Model {}
-
 Cliente.init(
   {
+    id: {
+      type: DataTypes.UUID,
+      defaultValue: DataTypes.UUIDV4,
+      allowNull: false,
+      primaryKey: true
+    },
     cpf: {
       type: DataTypes.STRING(14), // VARCHAR2(14)
-      primaryKey: true,
       allowNull: false,
       field: "cpf",
       unique: true // Garantir que o CPF seja único
@@ -51,8 +55,50 @@ Cliente.init(
     sequelize,
     modelName: "Cliente",
     tableName: "Clientes", 
-    timestamps: true 
   }
 );
 
-module.exports = { Cliente };
+class Totem extends Model{}
+// select * from Totem where cliente = id.cliente
+[
+  
+] 
+
+Totem.init(
+  {
+    id: {
+      type: DataTypes.UUID,
+      defaultValue: DataTypes.UUIDV4,
+      allowNull: false,
+      primaryKey: true,
+    },
+    cliente: {
+      type: DataTypes.UUID,
+      allowNull: false,
+      references: {
+        model: Cliente,
+        key: "id"
+      },
+    },
+    data: {
+      type: DataTypes.DATEONLY, // AAAA-MM-DD
+      allowNull: false,
+      defaultValue: DataTypes.NOW
+    },
+    horario_saida: {
+      type: DataTypes.INTEGER, // HORA -> INTEIRO
+      allowNull: true
+    },
+    horario_entrada: {
+      type: DataTypes.INTEGER, // HORA -> INTEIRO
+      allowNull: false
+    }
+  },
+  {
+    sequelize,
+    modelName: "Totem",
+    tableName: "Totem",
+  }
+)
+
+module.exports = { Cliente, Totem };

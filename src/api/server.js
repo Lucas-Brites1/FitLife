@@ -51,10 +51,14 @@ app.get("/page/cadastro", (req, res) => {
   return res.sendFile(PATH.join(__dirname, "../Pages/cadastro.html"))
 })
 
+app.get("/page/totem", (req, res) => {
+  return res.sendFile(PATH.join(__dirname, "../Pages/totem.html"))
+})
+
 // Método GET para retornar todos os clientes registrados no banco de dados
 app.get("/clientes", async (req, res) => {
   try {
-    const clientes = await DB.Cliente.findAll(); // Retorna todos os clientes da tabela Cliente "select * from Clientes"
+    const clientes = await DB.TableClient.findAll(); // Retorna todos os clientes da tabela Cliente "select * from Clientes"
     if(clientes.length > 0) {
       return res.status(200).json({"Clientes": clientes});
     } else {
@@ -70,7 +74,8 @@ app.get("/clientes", async (req, res) => {
 // A função tenta encontrar o cliente no banco de dados usando o CPF fornecido e retorna o Cliente como objeto javascript caso consiga achar no banco de dados e false caso não ache
 // Se algum erro acontecer durante a busca, um erro será lançado e o será mostrado no console por fim a API retornará uma resposta com status(500) <ERRO NO SERVIDOR> e enviará o erro respectivo como mensagem
 // Olhar na pasta Database/Database.js a função searchClient para ver como está implementada em caso de dúvida
-app.get("/cliente/:cpf", async (req, res) => {
+/* app.get("/cliente/:cpf", async (req, res) => {
+  req.params.cpf
   const CPF = req.params.cpf;
   try {
     const cliente = await DB.searchClient(CPF);
@@ -78,6 +83,17 @@ app.get("/cliente/:cpf", async (req, res) => {
   } catch(err) {
     console.error(err.message);
     return res.status(500).send(err)
+  }
+})
+*/
+
+
+app.post("/clientes/submit/totem", async(req, res) => {
+  const cpf = req.body.cpf
+  try {
+    await DB.acessControl(cpf)
+  } catch(err) {
+    console.error(err)
   }
 })
 
