@@ -86,26 +86,31 @@ app.get("/clientes", async (req, res) => {
 // A função tenta encontrar o cliente no banco de dados usando o CPF fornecido e retorna o Cliente como objeto javascript caso consiga achar no banco de dados e false caso não ache
 // Se algum erro acontecer durante a busca, um erro será lançado e o será mostrado no console por fim a API retornará uma resposta com status(500) <ERRO NO SERVIDOR> e enviará o erro respectivo como mensagem
 // Olhar na pasta Database/Database.js a função searchClient para ver como está implementada em caso de dúvida
-/* app.get("/cliente/:cpf", async (req, res) => {
-  req.params.cpf
+app.get("/cliente/report/:cpf", async (req, res) => {
   const CPF = req.params.cpf;
   try {
-    const cliente = await DB.searchClient(CPF);
-    return res.send(cliente);
+    const cliente = await DB.getReport(CPF);
+    console.log("CLIENTE REPORT: " + cliente)
+    if (!cliente) throw Error("Cliente não encontrado")
+    return res.status(200).json(cliente)
   } catch(err) {
-    console.error(err.message);
-    return res.status(500).send(err)
+    return res.status(500).send(err.message)
   }
 })
-*/
 
-
-app.post("/clientes/submit/totem", async(req, res) => {
+app.post("/clientes/totem/submit", async(req, res) => {
   const cpf = req.body.cpf
+  //{ status: 400, message: "Cliente não encontrado" }
   try {
-    await DB.acessControl(cpf)
+    const DBaccesControlResponse = await DB.acessControl(cpf)
+    const { status, message } = DBaccesControlResponse
+    console.log("STATUS: " + status, "MESSAGE:" + message)
+    if (status >= 400) {
+      throw Error(message) 
+    }
+    return res.status(200).send(message)
   } catch(err) {
-    console.error(err)
+    return res.status(500).send(err.message)
   }
 })
 

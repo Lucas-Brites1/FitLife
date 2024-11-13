@@ -1,13 +1,17 @@
 const dotenv = require("dotenv");
 const PATH = require("node:path");
-const { validarCPF } = require("../Database/utils/validarCPF.js");
-const { Cliente, Totem } = require("./Models.js");
-const { sequelize } = require("./Sequelize.js");
+const { validarCPF } = require("./utils/validateCPF.js");
+const { Cliente, Totem, Relatorio } = require("./Models.js");
+const { sequelize  } = require("./Sequelize.js");
+const { Op, where } = require("sequelize")
+const { formatDate, getSevenDaysBack } = require("./utils/dates.js");
+const { calculateTrainingTime, setCategory } = require("./utils/report.js");
 
 dotenv.config({ path: PATH.resolve(__dirname, "../.env") });
 class Database {
   TableClient = Cliente
   TableTotem = Totem
+  TableRelatorio = Relatorio
   isConnected = false
 
   async init() {
@@ -63,41 +67,130 @@ class Database {
     return count === 0; // Retorna verdadeiro se não houver registros com o mesmo telefone
   }
 
+  async getReport(CPF) {
+    try {
+      const cliente = await this.searchClient(CPF)
+      if(!cliente) {
+        throw Error("CPF inválido para obtenção de relatório.")
+      }
+      const report = await Relatorio.findOne({ where: {cliente: cliente.id} }) 
+      if(!report) return false
+      return report.dataValues      
+    } catch (err) {
+      return err
+    }
+  }
+
+  async calculateTotalTrainingTime(client) {
+    try {
+      const allDatesRecords = await Totem.findAll({
+        where: {cliente: client.id}
+      })
+
+      let calculatedTime = 0;
+      for (let i = 0; i < allDatesRecords.length; i++) {
+        const record = allDatesRecords[i]
+        const horario_entrada = record.dataValues.horario_entrada
+        const horario_saida = record.dataValues.horario_saida
+        calculatedTime += calculateTrainingTime(horario_entrada, horario_saida)
+      }
+      return calculatedTime
+    } catch (err) {
+      console.error(err)
+    }
+  }
+  
+  async calculateWeekTrainingTime(today, client)  {
+    // lastRecord -> ultimo registro da tabela Totem
+    const startOfWeekDate = getSevenDaysBack(today) // retorno da funcao getSevenDaysBack() -> 2024-11-07
+
+   try {
+      const weekDates = await Totem.findAll({
+        where: {
+          cliente: client.id,
+          data: {
+            [Op.between]: [startOfWeekDate, today]
+          }
+        }
+      })
+
+      let calculatedTime = 0;
+      for (let i=0; i<weekDates.length; i++) {
+        const record = weekDates[i]
+        const horario_entrada = record.dataValues.horario_entrada
+        const horario_saida = record.dataValues.horario_saida
+        calculatedTime += calculateTrainingTime(horario_entrada, horario_saida)
+      }
+      return calculatedTime
+   } catch (err) {
+    console.error(err)
+   }
+  }
+
   async acessControl(cpf) {
     try {
-      const cliente =  await this.searchClient(cpf)
-      if (!cliente) throw Error("Cliente não encontrado")
+      const client =  await this.searchClient(cpf)
+      if (!client) return { status: 400, message: "Cliente não encontrado" }
 
-      let date = new Date()
-      let formattedDate = date.toISOString().split("T")[0] // YYYY-MM-DD today.toISOString() ->'2024-11-12T19:53:11.150Z'.split("T") -> ["2024-11-12", "T19:53:11.150Z"] 
-
-      /*
-      select * from Totem
-      where cliente = cliente.id and data = formattedDate
-      order by desc
-      limit 1 row;
-      */
-
-      const lastRecord = await Totem.findOne({
-        where: { cliente: cliente.id, data: formattedDate },
-        order: [["data", "DESC"]]
+      const today = new Date() // pega a data de hoje
+      const formattedDate = formatDate(today) // formatDate e getSevenDaysBack > /Database/utils/dates.js
+      
+      const lastRecord = await Totem.findOne({                 // SELECT * FROM TOTEM WHERE CLIENTE = CLIENTE.id AND DATA = formattedDate
+        where: { cliente: client.id },                         // ORDER BY createdAt DESC 
+        order: [["createdAt", "DESC"]]                         // LIMIT 1;
       })
+
+      const weekTimeSpent = await this.calculateWeekTrainingTime(formattedDate, client)
+      const totalTimeSpent = await this.calculateTotalTrainingTime(client)
       
       if (lastRecord && !lastRecord.horario_saida) {
         try {
           await lastRecord.update({ horario_saida: new Date().getHours()})
+          try {
+            const reportSearch = await Relatorio.findAll({where: {cliente: client.id}})
+            if(reportSearch.length === 0) { 
+              try {
+                await Relatorio.create({
+                  cliente: client.id,
+                  classificacao: setCategory(weekTimeSpent),
+                  frequencia_total: totalTimeSpent,
+                  frequencia_semanal: weekTimeSpent
+                })
+              } catch (err) {
+                return { status: 500, message: "Erro ao criar relatorio" }
+              }
+            } else {
+              try {
+                await Relatorio.update({
+                  classificacao: setCategory(weekTimeSpent),
+                  frequencia_total: totalTimeSpent,
+                  frequencia_semanal: weekTimeSpent
+                }, 
+                  {
+                    where: {cliente: client.id}
+                  }
+                )
+              } catch (err) {
+                return { status: 500, message: "Erro ao tentar atualizar relatorio do aluno" }
+              }
+            }
+            return { status: 200, message: "Saida computada com sucesso!" }
+          } catch (err) {
+            return { status: 500, message: "Erro ao obter relatorios" }
+          }
         } catch(err) {
-          return err
+          return { status: 500, message: "Erro ao computar saida" }
         }
       } else {
-        Totem.create({
-          cliente: cliente.id, // chave estrangeira ID
+        await Totem.create({
+          cliente: client.id, // chave estrangeira ID
           data: formattedDate,
-          horario_entrada: date.getHours()
+          horario_entrada: today.getHours()
         })
+        return { status: 200, message: "Entrada computada com sucesso!" }
       }
     } catch (err) {
-      console.error(err)
+      return { status: 500, message: `Erro: ${err}` }
     }
   }
 
@@ -112,6 +205,9 @@ class Database {
   }
 
   async searchClient(cpf) {
+    if(!cpf) {
+      throw new Error("CPF inválido como parametro")
+    }
     try {
       const cliente = await Cliente.findOne({ where: {cpf} })
       if (!cliente) {
@@ -145,15 +241,13 @@ class Database {
               truncate: true
             })
           } catch(err) {
-            return err
+            throw Error(err)
           }
       }
     } catch(err) {
-      console.error(err);
-      return false;
+      throw Error(err)
     }
   }
-
 }
 
 const database = new Database();

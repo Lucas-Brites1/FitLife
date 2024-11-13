@@ -59,10 +59,6 @@ Cliente.init(
 );
 
 class Totem extends Model{}
-// select * from Totem where cliente = id.cliente
-[
-  
-] 
 
 Totem.init(
   {
@@ -98,7 +94,48 @@ Totem.init(
     sequelize,
     modelName: "Totem",
     tableName: "Totem",
+    timestamps: true,
   }
 )
 
-module.exports = { Cliente, Totem };
+class Relatorio extends Model{}
+
+Relatorio.init(
+  {
+    id: {
+      type: DataTypes.UUID,
+      defaultValue: DataTypes.UUIDV4,
+      allowNull: false,
+      primaryKey: true
+    },
+    cliente: {
+      type: DataTypes.UUID,
+      allowNull: false,
+      references: {
+        model: Cliente,
+        key: "id"
+      }
+    },
+    classificacao: {
+      type: DataTypes.TEXT,
+      allowNull: false
+    },
+    frequencia_total: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+    },
+    frequencia_semanal: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+    }
+  },
+  {
+    sequelize,
+    modelName: "Relatorio",
+    tableName: "Relatorios",
+    timestamps: true
+  }
+)
+
+
+module.exports = { Cliente, Totem, Relatorio };
