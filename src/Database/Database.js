@@ -16,6 +16,10 @@ class Database {
       console.log("Conexão com o banco de dados estabelecida.");
       this.isConnected = true
     } catch (err) {
+      setTimeout(() => {
+        console.log("Tentando reconexão com o banco...")
+        this.init()
+      }, 5000)
       console.error(`Erro ao tentar se conectar com o banco de dados: ${err}`);
     }
   }
@@ -62,22 +66,36 @@ class Database {
   async acessControl(cpf) {
     try {
       const cliente =  await this.searchClient(cpf)
-      if (!cliente) {
-        throw Error("Cliente não encontrado")
-      }
+      if (!cliente) throw Error("Cliente não encontrado")
 
       let date = new Date()
       let formattedDate = date.toISOString().split("T")[0] // YYYY-MM-DD today.toISOString() ->'2024-11-12T19:53:11.150Z'.split("T") -> ["2024-11-12", "T19:53:11.150Z"] 
 
-      // SELECT * FROM TOTEM WHERE CLIENTE = CLIENTEID
-      let registros = await Totem.findAll({ where: { cliente: cliente.id}})
+      /*
+      select * from Totem
+      where cliente = cliente.id and data = formattedDate
+      order by desc
+      limit 1 row;
+      */
 
-      Totem.create({
-        cliente: cliente.id, // chave estrangeira ID
-        data: formattedDate,
-        horario_entrada: date.getHours()
+      const lastRecord = await Totem.findOne({
+        where: { cliente: cliente.id, data: formattedDate },
+        order: [["data", "DESC"]]
       })
-
+      
+      if (lastRecord && !lastRecord.horario_saida) {
+        try {
+          await lastRecord.update({ horario_saida: new Date().getHours()})
+        } catch(err) {
+          return err
+        }
+      } else {
+        Totem.create({
+          cliente: cliente.id, // chave estrangeira ID
+          data: formattedDate,
+          horario_entrada: date.getHours()
+        })
+      }
     } catch (err) {
       console.error(err)
     }
@@ -106,14 +124,30 @@ class Database {
     }
   }  
 
-  async deleteAll(pass) {
+  async deleteAll(pass, schemaToDel) {
     try {
       if (pass != process.env.passDel) return false
-      await Cliente.destroy({
-        where: {},
-        truncate: true,
-      })
-      return true
+      switch (schemaToDel) {
+        case "CLIENTES":
+          try { 
+            await Cliente.destroy({
+              where: {},
+              truncate: true,
+            })
+            return true
+          } catch(err) {
+            return err
+          }
+        case "REGISTROS":
+          try {
+            await Totem.destroy({
+              where: {},
+              truncate: true
+            })
+          } catch(err) {
+            return err
+          }
+      }
     } catch(err) {
       console.error(err);
       return false;

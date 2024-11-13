@@ -56,6 +56,18 @@ app.get("/page/totem", (req, res) => {
 })
 
 // Método GET para retornar todos os clientes registrados no banco de dados
+app.get("/registros", async (req, res) => {
+  try {
+    const registros = await DB.TableTotem.findAll();
+    if (registros.length > 0) {
+      return res.status(200).json({"Entrada/Saida": registros});
+    } else {
+      return res.status(200).json({"Entrada/Saida": "sem registros disponiveis"})
+    }
+  } catch (err) {
+    return res.status(500).send(err.message);
+  }
+})
 app.get("/clientes", async (req, res) => {
   try {
     const clientes = await DB.TableClient.findAll(); // Retorna todos os clientes da tabela Cliente "select * from Clientes"
@@ -120,10 +132,11 @@ app.post("/clientes/submit", async (req, res) => {
   }
 });
 
-app.get("/clientes/delete/all/:pass", async (req, res) => {
+app.get("/clientes/delete/all/:pass/:schema", async (req, res) => {
   const password = req.params.pass
+  const schema = req.params.schema
   try {
-    const deleted = await DB.deleteAll(password)
+    const deleted = await DB.deleteAll(password, schema)
     if(deleted) {
       return res.status(200).json({mensagem: "Todos os registros foram limpos com sucesso."})
     }
