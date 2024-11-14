@@ -69,12 +69,6 @@ app.get("/registros", async (req, res) => {
   }
 })
 
-<<<<<<< HEAD
-=======
-// ? http://localhost:8989/clientes
-//* Endpoint da API que retorna todos os clientes cadastrados */
-//* Para retornar todos os cadastros estamos chamando da classe Database o método findAll() na tabela de Clientes*/
->>>>>>> a483cee9914b3c907f94cfd4c322f1f032bd31a4
 app.get("/clientes", async (req, res) => {
   try {
     //! Método findAll() que é chamado não é implementação nossa, é da biblioteca Sequelize: https://sequelize.org/docs/v6/core-concepts/model-querying-basics/ (verificar tópico do link: Simple Select Queries)
