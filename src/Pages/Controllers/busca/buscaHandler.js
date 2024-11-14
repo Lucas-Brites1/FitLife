@@ -24,20 +24,30 @@ btnBusca.addEventListener("click", async (ev) => {
   const P_Element_freqTotal = get("freq-total-p", "class")
   const P_Element_freqWeek = get("freq-semanal-p", "class")
   const P_Element_Category = get("classificacao-p", "class")
+  const warnings = get("mensagem", "class")
 
   try {
     const cliente = await axios.get("http://localhost:8989/cliente/report/"+CPF_Value)
+    console.log(!cliente)
     if(!cliente) {
       throw new Error("Cliente não encontrado")
     }
-    get("infos-cliente", "class").classList.toggle("visible")
-    get("infos-cliente", "class").classList.toggle("hidden")
-    const { classificacao, frequencia_semanal, frequencia_total} = cliente.data
-
-    P_Element_Category.innerHTML = `<h3 class="info-label">Classificação</h3>` + classificacao
-    P_Element_freqWeek.innerHTML =  `<h3 class="info-label">Frequência Semanal</h3>` + frequencia_semanal
-    P_Element_freqTotal.innerHTML =  `<h3 class="info-label">Frequência Total</h3>` + frequencia_total
+    if(cliente.data && Object.keys(cliente.data).length === 0) {
+      throw new Error("Não há relatórios disponíveis para este cliente.")
+    } 
+    else {
+      warnings.innerText = "Relatório encontrado com sucesso!"
+      get("infos-cliente", "class").classList.toggle("visible")
+      get("infos-cliente", "class").classList.toggle("hidden")
+      console.log(cliente)
+      const { classificacao, frequencia_semanal, frequencia_total} = cliente.data
+  
+      P_Element_Category.innerHTML = `<h3 class="info-label">Classificação</h3>` + classificacao
+      P_Element_freqWeek.innerHTML =  `<h3 class="info-label">Frequência Semanal</h3>` + frequencia_semanal
+      P_Element_freqTotal.innerHTML =  `<h3 class="info-label">Frequência Total</h3>` + frequencia_total
+    }
   } catch (err) {
+    warnings.innerText = err.message
     return err
   }
 })

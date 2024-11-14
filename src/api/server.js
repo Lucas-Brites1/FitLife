@@ -68,6 +68,7 @@ app.get("/registros", async (req, res) => {
     return res.status(500).send(err.message);
   }
 })
+
 app.get("/clientes", async (req, res) => {
   try {
     const clientes = await DB.TableClient.findAll(); // Retorna todos os clientes da tabela Cliente "select * from Clientes"
@@ -90,7 +91,6 @@ app.get("/cliente/report/:cpf", async (req, res) => {
   const CPF = req.params.cpf;
   try {
     const cliente = await DB.getReport(CPF);
-    console.log("CLIENTE REPORT: " + cliente)
     if (!cliente) throw Error("Cliente não encontrado")
     return res.status(200).json(cliente)
   } catch(err) {

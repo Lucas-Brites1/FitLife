@@ -71,9 +71,10 @@ class Database {
     try {
       const cliente = await this.searchClient(CPF)
       if(!cliente) {
-        throw Error("CPF inválido para obtenção de relatório.")
+        throw Error("CPF não registrado.")
       }
       const report = await Relatorio.findOne({ where: {cliente: cliente.id} }) 
+      console.log(!report)
       if(!report) return false
       return report.dataValues      
     } catch (err) {
