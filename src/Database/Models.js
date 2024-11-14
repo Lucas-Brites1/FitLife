@@ -138,10 +138,6 @@ Relatorio.init(
 )
 
 Cliente.hasOne(Relatorio, { foreignKey: "cliente" })
-<<<<<<< HEAD
 Relatorio.belongsTo(Cliente, { foreignKey: "cliente" })
-=======
-Relatorio.belongsTo(Cliente, { foreignKey: "cliente"})
->>>>>>> a483cee9914b3c907f94cfd4c322f1f032bd31a4
 
 module.exports = { Cliente, Totem, Relatorio };

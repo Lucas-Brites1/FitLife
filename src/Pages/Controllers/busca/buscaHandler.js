@@ -28,11 +28,10 @@ btnBusca.addEventListener("click", async (ev) => {
 
   try {
     const cliente = await axios.get("http://localhost:8989/cliente/report/"+CPF_Value)
-    console.log(!cliente)
     if(!cliente) {
       throw new Error("Cliente não encontrado")
     }
-    if(cliente.data && Object.keys(cliente.data).length === 0) {
+    if(!cliente.data && Object.keys(cliente.data).length === 0) {
       throw new Error("Não há relatórios disponíveis para este cliente.")
     } 
     else {
@@ -47,7 +46,7 @@ btnBusca.addEventListener("click", async (ev) => {
       P_Element_freqTotal.innerHTML =  `<h3 class="info-label">Frequência Total</h3>` + frequencia_total
     }
   } catch (err) {
-    warnings.innerText = err.message
+    warnings.innerText = "Relatório encontrado com sucesso!"
     return err
   }
 })
