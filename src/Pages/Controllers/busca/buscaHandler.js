@@ -19,34 +19,31 @@ Redirect(get("search-btn", "id"), "http://localhost:8989/page/cadastro")
 
 const btnBusca = get("btn-buscar-aluno", "class");
 btnBusca.addEventListener("click", async (ev) => {
-  ev.preventDefault()
-  const CPF_Value = get("input-busca-aluno", "id").value
-  const P_Element_freqTotal = get("freq-total-p", "class")
-  const P_Element_freqWeek = get("freq-semanal-p", "class")
-  const P_Element_Category = get("classificacao-p", "class")
-  const warnings = get("mensagem", "class")
+  ev.preventDefault();
+  const CPF_Value = get("input-busca-aluno", "id").value;
+  const P_Element_freqTotal = get("freq-total-p", "class");
+  const P_Element_freqWeek = get("freq-semanal-p", "class");
+  const P_Element_Category = get("classificacao-p", "class");
+  const warnings = get("mensagem", "class");
 
   try {
-    const cliente = await axios.get("http://localhost:8989/cliente/report/"+CPF_Value)
-    if(!cliente) {
-      throw new Error("Cliente não encontrado")
-    }
-    if(!cliente.data && Object.keys(cliente.data).length === 0) {
-      throw new Error("Não há relatórios disponíveis para este cliente.")
-    } 
-    else {
-      warnings.innerText = "Relatório encontrado com sucesso!"
-      get("infos-cliente", "class").classList.toggle("visible")
-      get("infos-cliente", "class").classList.toggle("hidden")
-      console.log(cliente)
-      const { classificacao, frequencia_semanal, frequencia_total} = cliente.data
-  
-      P_Element_Category.innerHTML = `<h3 class="info-label">Classificação</h3>` + classificacao
-      P_Element_freqWeek.innerHTML =  `<h3 class="info-label">Frequência Semanal</h3>` + frequencia_semanal
-      P_Element_freqTotal.innerHTML =  `<h3 class="info-label">Frequência Total</h3>` + frequencia_total
-    }
+    const cliente = await axios.get("http://localhost:8989/cliente/report/" + CPF_Value);
+    warnings.innerText = "Relatório encontrado com sucesso!";
+    get("infos-cliente", "class").classList.toggle("visible");
+    get("infos-cliente", "class").classList.toggle("hidden");
+    
+    const { classificacao, frequencia_semanal, frequencia_total } = cliente.data;
+
+    P_Element_Category.innerHTML = `<h3 class="info-label">Classificação</h3>` + classificacao;
+    P_Element_freqWeek.innerHTML = `<h3 class="info-label">Frequência Semanal</h3>` + frequencia_semanal;
+    P_Element_freqTotal.innerHTML = `<h3 class="info-label">Frequência Total</h3>` + frequencia_total;
+
   } catch (err) {
-    warnings.innerText = "Relatório encontrado com sucesso!"
-    return err
+    console.log(err);
+    if(err.response && err.response.data) {
+      warnings.innerHTML = err.response.data
+    } else {
+      warnings.innerText = "Erro na requisição.";
+    }
   }
-})
+});

@@ -7,6 +7,7 @@ dotenv.config({ path: PATH.resolve(__dirname, "../.env") });
 const { database } = require("../Database/Database.js");
 const { loggerMiddleware } = require("./middleware/logger");
 const { checkDatabaseConnection } = require("./middleware/checkDatabaseConnection.js");
+const { verifyAndHandleErrors } = require("../Database/utils/handleError.js");
 
 // Instanciando nosso servidor HTTP usando framework EXPRESS
 const app = express();
@@ -27,10 +28,6 @@ app.use(loggerMiddleware);
 // Middleware que fizemos (checkDatabaseConnection) garante que o banco de dados esteja conectado antes de que qualquer requisição dependa dele. Assim, se DB.isConnected for falso..
 // ..retorna uma resposta de status 503 que significa `Service Unavaible` (serviço indisponível), envia o arquivo html 503.html para ser renderizado e impede que o restante do código seja executado
 app.use(checkDatabaseConnection(DB))
-
-app.get("/teste", (req, res) => {
-  return res.status(200).json({"mensagem": "API rodando."})
-})    
 
 // Métodos GET que enviam o arquivo estático das paginas especificadas nas urls, exemplo /page/admin irá enviar o admin.html
 app.get("/", (req, res) => {
@@ -92,11 +89,13 @@ app.get("/clientes", async (req, res) => {
 app.get("/cliente/report/:cpf", async (req, res) => {
   const CPF = req.params.cpf;
   try {
-    const cliente = await DB.getReport(CPF);
-    if (!cliente) throw Error("Cliente não encontrado")
-    return res.status(200).json(cliente)
+    const returnValue = await DB.getReport(CPF);
+    const client = returnValue.info
+    if(!client) verifyAndHandleErrors(returnValue, true)
+    verifyAndHandleErrors(returnValue, false)
+    return res.status(returnValue.statusCode).json(client)
   } catch(err) {
-    return res.status(500).send(err.message)
+    return res.status(err.statusCode || 500).send(err.message ||"Erro interno do servidor")
   }
 })
 
@@ -104,38 +103,29 @@ app.post("/clientes/totem/submit", async(req, res) => {
   const cpf = req.body.cpf
   //{ status: 400, message: "Cliente não encontrado" }
   try {
-    const DBaccesControlResponse = await DB.acessControl(cpf)
-    const { status, message } = DBaccesControlResponse
-    console.log("STATUS: " + status, "MESSAGE:" + message)
-    if (status >= 400) {
-      throw Error(message) 
-    }
-    return res.status(200).send(message)
+    const returnValue = await DB.acessControl(cpf)
+    verifyAndHandleErrors(returnValue, false)
+    return res.status(returnValue.statusCode).send(returnValue.message)
   } catch(err) {
-    return res.status(500).send(err.message)
+    return res.status(err.statusCode || 500).send(err.message ||"Erro interno do servidor")
   }
 })
 
 // Método POST para adicionar um novo cliente ao banco de dados
-// Quando é feita uma requisição para a seguinte url (http://localhost:8989/api/clientes) deve ser passado um objeto Cliente tendo os seguintes campos cpf, nome, telefone, peso, altura, data_nascimento, sexo
+// Quando é feita uma requisição para a seguinte url (http://localhost:8989/clientes/submit) deve ser passado um objeto Cliente tendo os seguintes campos cpf, nome, telefone, peso, altura, data_nascimento, sexo
 // Se tudo deu certo na validação dos campos do formulário no /Controllers/cadastro/cadastroHandler.js a função executeInsertion da nossa Classe do banco de dados será chamada
 // executeInsertion é uma função que espera como parametro um objeto do tipo Cliente se tudo estiver correto o cliente será cadastrado corretamente no banco de dados
 // verificar a função executeInsertion no diretorio /Database/Database.js/executeInsertion e também verificar a tabela Cliente para ver os campos desta tabela em /Database/models/Cliente.js
 app.post("/clientes/submit", async (req, res) => {
   const { cpf, nome, telefone, email, peso, altura, data_nascimento, sexo } = req.body;
-
   const novoCliente = { cpf, nome, telefone, email, peso, altura, data_nascimento, sexo };
 
   try {
-    const executeResponseDB = await DB.executeInsertion(novoCliente);
-   
-    if (executeResponseDB && typeof executeResponseDB === "object") {
-      return res.status(400).send(executeResponseDB.errorMessage);
-    }
-
-    return res.status(201).send("Cliente adicionado com sucesso!");
-  } catch (error) {
-    return res.status(500).send(`Erro interno do servidor: ${error.message}`);
+    const returnValue = await DB.executeInsertion(novoCliente);
+    verifyAndHandleErrors(returnValue, false)
+    return res.status(returnValue.statusCode).send(returnValue.message);
+  } catch (err) {
+    return res.status(err.statusCode || 500).send(err.message || "Erro interno no servidor.")
   }
 });
 
@@ -143,13 +133,10 @@ app.get("/clientes/delete/all/:pass/:schema", async (req, res) => {
   const password = req.params.pass
   const schema = req.params.schema
   try {
-    const deleted = await DB.deleteAll(password, schema)
-    if(deleted) {
-      return res.status(200).json({mensagem: "Todos os registros foram limpos com sucesso."})
-    }
-    throw new Error("Senha inválida")
+    const returnValue = await DB.deleteAll(password, schema)
+    verifyAndHandleErrors(returnValue, false)
   } catch (err) {
-    return res.status(500).json({erro: err.message})
+    return res.status(err.statusCode || 500).send(err.message || "Erro interno no servidor.")
   }
 })
 
