@@ -68,16 +68,22 @@ app.get("/registros", async (req, res) => {
     return res.status(500).send(err.message);
   }
 })
+
+// ? http://localhost:8989/clientes
+//* Endpoint da API que retorna todos os clientes cadastrados */
+//* Para retornar todos os cadastros estamos chamando da classe Database o método findAll() na tabela de Clientes*/
 app.get("/clientes", async (req, res) => {
   try {
-    const clientes = await DB.TableClient.findAll(); // Retorna todos os clientes da tabela Cliente "select * from Clientes"
+    //! Método findAll() que é chamado não é implementação nossa, é da biblioteca Sequelize: https://sequelize.org/docs/v6/core-concepts/model-querying-basics/ (verificar tópico do link: Simple Select Queries)
+    const clientes = await DB.TableClient.findAll(); //* Retorna todos os clientes da tabela Cliente "select * from Clientes"
+    //? Abaixo verificamos se o array de Clientes que está populado (com um ou mais registros) a partir da função findAll()
     if(clientes.length > 0) {
-      return res.status(200).json({"Clientes": clientes});
+      return res.status(200).json({"Clientes": clientes}); //* caso o tamanho da lista Clientes[] for maior que 0 retornamos os resultados
     } else {
-      return res.status(200).json({"Clientes": "Nenhum registro encontrado"})
+      return res.status(200).json({"Clientes": "Nenhum registro encontrado"}) //* caso o tamanho (length) da lista retornada for 0 retornamos o aviso que Nenhum registro foi encontrado
     }
   } catch (err) {
-    return res.status(500).send(err.message);
+    return res.status(500).send(err.message); //! Caso der erro em alguma chamada das funções da classe Database der erro ( src > Database > Database.js : (class Database))
   }
 });
 

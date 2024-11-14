@@ -33,10 +33,17 @@ btnBusca.addEventListener("click", async (ev) => {
     get("infos-cliente", "class").classList.toggle("visible")
     get("infos-cliente", "class").classList.toggle("hidden")
     const { classificacao, frequencia_semanal, frequencia_total} = cliente.data
-
-    P_Element_Category.innerHTML = `<h3 class="info-label">Classificação</h3>` + classificacao
-    P_Element_freqWeek.innerHTML =  `<h3 class="info-label">Frequência Semanal</h3>` + frequencia_semanal
-    P_Element_freqTotal.innerHTML =  `<h3 class="info-label">Frequência Total</h3>` + frequencia_total
+    /*
+    <p class="classificacao-label"></p>
+    <p class="freq-semanal-label"></p>
+    <p class="freq-total-label"></p>
+    */
+    get("classificacao-label", "class").innerHTML = "Classificação"
+    get("freq-semanal-label", "class").innerHTML = "Frequência Semana"
+    get("freq-total-label", "class").innerHTML = "Frequência Total"
+    P_Element_Category.innerHTML = classificacao
+    P_Element_freqWeek.innerHTML =  frequencia_semanal
+    P_Element_freqTotal.innerHTML =  frequencia_total
   } catch (err) {
     return err
   }

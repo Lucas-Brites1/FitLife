@@ -18,6 +18,7 @@ class Database {
     try {
       await sequelize.authenticate();
       console.log("Conexão com o banco de dados estabelecida.");
+      await sequelize.sync({force: true})
       this.isConnected = true
     } catch (err) {
       setTimeout(() => {
@@ -191,6 +192,18 @@ class Database {
       }
     } catch (err) {
       return { status: 500, message: `Erro: ${err}` }
+    }
+  }
+
+  async clientsReport() {
+    try {
+      await Relatorio.findAll({
+        where: {
+
+        }
+      })
+    } catch(err) {
+
     }
   }
 
