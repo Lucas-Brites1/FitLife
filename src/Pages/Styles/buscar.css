@@ -103,6 +103,8 @@ body {
     transition: width .5s ease-in-out;
 }
 
+
+
 .panel h1 {
     font-weight: bolder;
 }
@@ -128,7 +130,6 @@ h3 {
     font-size: 0.75rem;
     padding: 0.5rem;
     font-weight: normal;
-    color: #b4b0b0;
 }
 
 .div-mensagem-alerta {
@@ -156,7 +157,6 @@ h3 {
     text-align: center;
     font-weight: 400;
     font-size: .9rem;
-    color: red;
 }
 
 .mensagem {
@@ -165,9 +165,6 @@ h3 {
     text-align: center;
 }
 
-.infos-cliente.hidden {
-    display: none;
-}
 
 .infos-cliente.visible{
     transition: all 1s ease-out;
@@ -177,7 +174,7 @@ h3 {
     width: 100%;
     height: 40vh;
     flex-direction: column;
-    gap: 1rem;
+    gap: .25rem;
     align-items: center;
     justify-content: center;
 }
@@ -186,13 +183,7 @@ h3 {
     text-align: center;
 }
 
-.pInfo {
-    font-size: 1rem;
-}
-
-.info-label {
-    font-size: 1.75rem;
-}
+.infos-cliente.visible
 
 .form-container {
     transition: transform 0.5s ease-in-out;
@@ -221,4 +212,18 @@ h3 {
 
 .input, button {
     transition: padding 0.3s ease, margin-top 0.3s ease;
+}
+
+p.classificacao, p.freq-semanal, p.freq-total {
+    font-size: 1.2rem;
+    padding: .5rem;
+    color: black;
+    border: 1px solid #b4b0b0;
+}
+
+h3.info-label {
+    width: 30rem;
+    font-weight: bolder;
+    font-size: 2rem;
+    color: black;
 }

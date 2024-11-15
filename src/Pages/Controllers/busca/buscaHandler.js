@@ -34,10 +34,20 @@ btnBusca.addEventListener("click", async (ev) => {
     
     const { classificacao, frequencia_semanal, frequencia_total } = cliente.data;
 
-    P_Element_Category.innerHTML = `<h3 class="info-label">Classificação</h3>` + classificacao;
-    P_Element_freqWeek.innerHTML = `<h3 class="info-label">Frequência Semanal</h3>` + frequencia_semanal;
-    P_Element_freqTotal.innerHTML = `<h3 class="info-label">Frequência Total</h3>` + frequencia_total;
+    let textFreqSemanal, textFreqTotal
+    if (frequencia_semanal < 2) {
+      textFreqSemanal = " hora"
+    }
+    else textFreqSemanal = " horas"
 
+    if(frequencia_total < 2) {
+      textFreqTotal = " hora"
+    } 
+    else textFreqTotal = " horas"
+
+    P_Element_Category.innerHTML = `<h3 class="info-label">Classificação</h3>` + `<p class="classificacao">${classificacao} </p>`;
+    P_Element_freqWeek.innerHTML = `<h3 class="info-label">Frequência Semanal</h3>` + `<p class="freq-semanal">${frequencia_semanal} ${textFreqSemanal}</p>`;
+    P_Element_freqTotal.innerHTML = `<h3 class="info-label">Frequência Total</h3>` + `<p class="freq-total">${frequencia_total} ${textFreqTotal}</p>`;
   } catch (err) {
     console.log(err);
     if(err.response && err.response.data) {

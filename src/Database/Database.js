@@ -77,6 +77,22 @@ class Database {
     return count === 0;
   }
 
+  async getReportsForEveryClient() {
+    try {
+      const allClientsReports = await Cliente.findAll({
+        // INNER JOIN
+        include: {
+          model: Relatorio,
+          required: true // só retorna caso o cliente tenha algum Relatorio vinculado
+        }
+      });
+      return this.databaseReturn(200, allClientsReports, "Relatórios dos clientes obtidos com sucesso!")
+    } catch(err) {
+      console.error("Erro ao obter relatórios dos clientes:", err); 
+      return this.databaseReturn(500, null, "Algo deu errado na tentativa de obter os relatórios dos clientes.")
+    }
+  }
+
   async getReport(CPF) {
     try {
       const cliente = await this.searchClient(CPF);

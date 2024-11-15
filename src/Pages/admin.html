@@ -3,12 +3,35 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link href="https://fonts.googleapis.com/css2?family=Afacad+Flux:wght@100..1000&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/Styles/admin.css">
-  <script src="/Controllers/admin/adminController.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+  <script type="module" src="/Controllers/admin/adminController.js" defer></script>
   <title>ADMIN</title>
 </head>
 <body>
-  <h1>Pagina administrador</h1>
+  <container class="main-container">
+    <div class="menu">
+      <h1 class="title">Sistema Gerencial</h1>
+    </div>
+    <div class="table">
+      <div class="labels">
+        <h3 class="label-nome labelInfo">Nome</h3>
+        <h3 class="label-classificao labelInfo">Frequência Total</h3>
+        <h3 class="label-freq-total labelInfo">Frequência Semanal</h3>
+        <h3 class="label-freq-semanal labelInfo">Classificação</h3>
+      </div>
+      <div class="responses">
+        <!--
+        <div class="client-response">
+          <p class="resp-nome respInfo">Lucas Silva Brites</p>
+          <p class="resp-freq-total respInfo">100 horas</p>
+          <p class="resp-freq-semanal respInfo">15 horas</p>
+          <p class="resp-classificacao respInfo">Avançado</p>
+        </div>
+        -->
+      </div>
+    </div>
+  </container>
 </body>
 </html>

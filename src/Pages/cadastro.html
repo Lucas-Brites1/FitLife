@@ -23,7 +23,7 @@
 
             <div class="input-group">
                 <label for="cpf">CPF do Aluno</label>
-                <input type="text" id="cpf" name="cpf" placeholder="Digite o CPF">
+                <input type="text" id="cpf" name="cpf" placeholder="Digite o CPF" maxlength="14">
             
                 <label for="nome">Nome do Aluno</label>
                 <input type="text" id="nome" name="nome" placeholder="Digite o nome completo">
@@ -68,4 +68,32 @@
             </div>
     </div>
 </body>
+<script>
+    document.getElementById('cpf').addEventListener('input', function(e) {
+    // (\d{3}): Isso captura os primeiros 3 dígitos.
+    // (\d{1,}): Isso captura os próximos dígitos após os 3 primeiros, mas de maneira que também funcione se houver 4, 5 ou mais dígitos.
+
+    let cpf = e.target.value.replace(/\D/g, '');  // Remove qualquer caractere não numérico
+    if (cpf.length <= 3) {
+        e.target.value = cpf;
+    } else if (cpf.length <= 6) {
+        e.target.value = cpf.replace(/(\d{3})(\d{1,})/, '$1.$2'); 
+    } else if (cpf.length <= 9) {
+        e.target.value = cpf.replace(/(\d{3})(\d{3})(\d{1,})/, '$1.$2.$3');
+    } else {
+        e.target.value = cpf.replace(/(\d{3})(\d{3})(\d{3})(\d{1,})/, '$1.$2.$3-$4');
+    }
+    });
+
+    document.getElementById('telefone').addEventListener('input', function(e) {
+        let tel = e.target.value.replace(/\D/g, '');  // Remove qualquer caractere não numérico
+        if (tel.length <= 2) {
+            e.target.value = `(${tel})`;  
+        } else if (tel.length <= 6) {
+            e.target.value = `(${tel.slice(0, 2)}) ${tel.slice(2)}`;
+        } else {
+        e.target.value = `(${tel.slice(0, 2)}) ${tel.slice(2, 7)}-${tel.slice(7, 11)}`;  // Formata como (XX) XXXXX-XXXX
+        }
+    })
+</script>
 </html>

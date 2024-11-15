@@ -30,6 +30,7 @@ body {
     display: flex;
 }
 
+
 .container p {
     font-size: 14px;
     line-height: 20px;
@@ -83,6 +84,7 @@ body {
 .container form input {
     width: 50%;
 }
+
 
 .container input {
     background-color: #eee;
@@ -175,3 +177,4 @@ h3 {
     font-weight: bold;
     text-align: center;
 }
+

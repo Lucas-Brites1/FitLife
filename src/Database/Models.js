@@ -23,9 +23,6 @@ Cliente.init(
     telefone: {
       type: DataTypes.STRING(15), // VARCHAR2(15)
       allowNull: true,
-      validate: {
-        isNumeric: true // Verifica se o telefone é numérico
-      }
     },
     email: {
       type: DataTypes.STRING(100), // VARCHAR2(100)
