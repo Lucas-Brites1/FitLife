@@ -11,21 +11,20 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-    height: 100vh;  /*???*/
+    height: 100vh;
 }
 
 .container {
     background-color: #fff;
     border-radius: 30px;
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.35);
-    overflow: auto; /*???*/
+    overflow: auto;
     width: 1028px;
     height: 678px;
     max-width: 100%;
     min-height: 480px;
     display: flex;
 }
-
 
 h1 {
     font-weight: bolder;
@@ -47,6 +46,7 @@ p {
     margin: 20px 0;
 }
 
+/* Estilos de animação para os inputs */
 input {
     background-color: #eee;
     border: none;
@@ -54,15 +54,22 @@ input {
     padding: 10px 15px;
     font-size: 13px;
     border-radius: 0.5rem;
-    width: 100%; 
+    width: 100%;
     outline: none;
+    transition: background-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
 }
 
 input:focus {
-    box-shadow: 0px 5px 10px #5c6bc018;
+    background-color: #f5f5f5;
+    box-shadow: 0px 5px 10px rgba(92, 107, 192, 0.15);
+    transform: scale(1.02);
 }
 
-button {
+input:hover {
+    background-color: #f0f0f0;
+}
+
+.container button {
     background-color: #512da8;
     color: #fff;
     font-size: 12px;
@@ -74,6 +81,33 @@ button {
     text-transform: uppercase;
     margin-top: 10px;
     cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s ease, transform 0.3s ease;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.container button::before {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 300%;
+    height: 300%;
+    background-color: #5e3c981a;
+    border-radius: 50%;
+    transform: translate(-50%, -50%) scale(0);
+    transition: transform 0.5s ease;
+}
+
+.container button:hover::before {
+    transform: translate(-50%, -50%) scale(1);
+}
+
+.container button:hover {
+    transform: scale(1.05);
+    background-color: #673ab7;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.35);
 }
 
 .container-form {
@@ -138,26 +172,43 @@ button:hover {
 
 .div-mensagem-alerta {
     position: absolute;
-    width: 30vw;
-    height: 10%;
-    background-color: #4c00ff02;
+    width: 35vw;
+    height: 9%;
+    background: linear-gradient(135deg, #e0e0e0, #ffffff);
     display: flex;
     align-items: center;
     justify-content: center;
     bottom: 3vh;
-    border-radius: .3rem;
-    box-shadow: 2px 10px 10px rgba(0, 0, 0, 0.226);
+    border-radius: 1rem;
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.15);
+    animation: slideIn 0.8s ease-out;
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateY(30%);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+.mensagem {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #333;
+    padding: 0 1rem;
+    text-align: center;
+    
 }
 
 .dados-invalidos {
+    display: flex;
     text-align: center;
     font-weight: 400;
     font-size: .9rem;
     color: red;
 }
 
-.mensagem {
-    font-size: 1.1rem;
-    font-weight: bold;
-    text-align: center;
-}

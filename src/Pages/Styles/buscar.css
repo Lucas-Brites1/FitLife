@@ -1,9 +1,6 @@
 * {
     font-family: "Montserrat", sans-serif;
-    font-optical-sizing: auto;
-    font-weight: normal;
-    font-style: normal;
-    padding: 0;
+    padding: 0; 
     margin: 0;
     box-sizing: border-box;
 }
@@ -19,6 +16,7 @@ body {
 }
 
 .container {
+    position: relative;
     background-color: #fff;
     border-radius: 30px;
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.35);
@@ -49,6 +47,41 @@ body {
     text-transform: uppercase;
     margin-top: 10px;
     cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s ease, transform 0.3s ease;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.container button::before {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 300%;
+    height: 300%;
+    background-color: #5e3c981a;
+    border-radius: 50%;
+    transform: translate(-50%, -50%) scale(0);
+    transition: transform 0.5s ease;
+}
+
+.container button:hover::before {
+    transform: translate(-50%, -50%) scale(1);
+}
+
+.container button:hover {
+    transform: scale(1.05);
+    background-color: #673ab7;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.35);
+}
+
+.form-buscar {
+    display: flex;
+    justify-content: center;
+    position: relative;
+    width: 100%;
+    height: 100vh;
 }
 
 .form-buscar {
@@ -56,7 +89,6 @@ body {
 }
 
 .form-container {
-    width: 50%;
     transition: width 1s ease;
 }
 
@@ -66,7 +98,7 @@ body {
     padding: 0 40px;
     justify-content: center;
     align-items: center;
-    flex-direction: column;
+    flex-direction: row;
 }
 
 .container form h1 {
@@ -103,7 +135,9 @@ body {
     transition: width .5s ease-in-out;
 }
 
-
+.panel.hidden {
+    display: none;
+}
 
 .panel h1 {
     font-weight: bolder;
@@ -118,18 +152,15 @@ body {
     border: 1px solid rgba(255, 255, 255, 0.514);
 }
 
-input:focus {
-    box-shadow: 0px 5px 10px #5c6bc018;
-}
-
 button:hover {
-    transform: scale(1.025);
+    transform: scale(1.05);
 }
 
 h3 {
     font-size: 0.75rem;
     padding: 0.5rem;
     font-weight: normal;
+    color: #b4b0b0;
 }
 
 .div-mensagem-alerta {
@@ -149,6 +180,7 @@ h3 {
     background-color: transparent;
     border-color: #fff;
 }
+
 #search-btn:hover {
     background-color: #dddbe015;
 }
@@ -165,28 +197,25 @@ h3 {
     text-align: center;
 }
 
-
-.infos-cliente.visible{
-    transition: all 1s ease-out;
-    margin-top: 1rem;
+.infos-cliente.visible {
     position: relative;
-    display: flex;
     width: 100%;
-    height: 40vh;
-    flex-direction: column;
-    gap: .25rem;
-    align-items: center;
-    justify-content: center;
+    height: 100%;
+    transition: slideIn 1s ease;
 }
 
 .infos-cliente.visible > * {
+    transition: slideIn 1s ease;
     text-align: center;
 }
 
-.infos-cliente.visible
-
 .form-container {
+    position: relative;
     transition: transform 0.5s ease-in-out;
+}
+
+.form-container.all {
+    background: fixed(to right, #5c6bc0, #512da8);
 }
 
 .form-busca-input-div {
@@ -195,19 +224,6 @@ h3 {
     align-items: center;
     flex-direction: column;
     transition: all 1s ease;
-}
-
-.infos-cliente.visible {
-    transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    margin-top: 1rem;
-    position: relative;
-    display: flex;
-    width: 100%;
-    height: 40vh;
-    flex-direction: column;
-    gap: 1rem;
-    align-items: center;
-    justify-content: center;
 }
 
 .input, button {
@@ -224,6 +240,237 @@ p.classificacao, p.freq-semanal, p.freq-total {
 h3.info-label {
     width: 30rem;
     font-weight: bolder;
-    font-size: 2rem;
+    font-size: 1.5rem;
     color: black;
 }
+
+input {
+    background-color: #eee;
+    border: none;
+    margin: 8px 0;
+    padding: 10px 15px;
+    font-size: 13px;
+    border-radius: 0.5rem;
+    width: 100%;
+    outline: none;
+    transition: background-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease; /* Adicione a transição aqui */
+}
+
+input:focus {
+    background-color: #f5f5f5;
+    box-shadow: 0px 5px 10px rgba(92, 107, 192, 0.15);
+    transform: scale(1.02); /* Aplique suavemente */
+}
+
+.div-mensagem-alerta {
+    position: absolute;
+    width: 35vw;
+    height: 9%;
+    background: linear-gradient(135deg, #e0e0e0, #ffffff);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    bottom: 3vh;
+    border-radius: 1rem;
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.15);
+    animation: slideIn 0.8s ease-out;
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateY(30%);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+.mensagem {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #333;
+    padding: 0 1rem;
+    text-align: center;
+    
+}
+
+.dados-invalidos {
+    display: flex;
+    text-align: center;
+    font-weight: 400;
+    font-size: .9rem;
+}
+
+.form-busca-input-div.hidden {
+    display: none;
+}
+
+.freq-total {
+    margin-bottom: 5rem;
+}
+
+.btn-voltar {
+    margin-top: 5rem;
+    width: 75%;
+    margin-top: 5rem;
+}
+
+p.classificacao, p.freq-semanal, p.freq-total {
+    font-size: 1.2rem;
+    padding: 1rem;
+    color: #333;
+    border-radius: 12px;
+    border: 1px solid #d1d1d1;
+    background: linear-gradient(to right, #5c6bc0, #512da8);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    width: 80%;
+    max-width: 320px;
+    text-align: center;
+}
+
+p.classificacao:hover, p.freq-semanal:hover, p.freq-total:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+}
+
+h1 {
+    font-weight: bolder;
+    font-size: 1.8rem;
+    margin-bottom: 20px;
+}
+
+
+.form-container.visible {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+   
+}
+
+.infos-cliente.hidden {
+    display: none;
+}
+
+.infos-cliente {
+    position: relative;
+    display: flex;
+    gap: 20px; 
+    justify-content: center; 
+    align-content: center; 
+    width: 100%;
+    height: 90%; 
+    padding: 20px;
+    box-sizing: border-box;
+}
+.div-infos-combinadas {
+    position: relative;
+    width: 100%;
+    height: 30%;
+    display: grid;
+    margin: 0 auto;
+    grid-template-columns: repeat(2, 1fr); /* Ajuste para 2 colunas */
+    gap: .75rem;  /* Se necessário, ajuste o gap entre as colunas */
+}
+
+.form-buscar {
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+
+.labels-h1.visible {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    height: 100%;
+    width: fit-content;
+    letter-spacing: .15rem;
+    font-weight: bolder;
+    color: #333;
+}
+
+.labels-h1.hidden {
+    display: none;
+}
+
+.labels-h1.visible {
+    display: flex;
+    width: 100%;
+    padding: 0 .5rem 0 .5rem;
+}
+
+.labels-h1.visible p {
+    text-align: justify;
+    letter-spacing: .15rem;
+    color: #b4b0b0;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.181);
+    padding: 1rem;
+    text-shadow: 1px 1px 0px #979494;
+}
+
+.labels-h1.visible .nome {
+    font-size: 1.5rem;
+    font-weight: bolder;
+    text-align: center;
+    color: #512da8;
+    text-transform: capitalize;
+    text-shadow: 1px 1px 0px  #402285;
+}
+
+.infoP {
+    padding: .6rem;
+    border-radius: .45rem;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    text-align: center;
+    font-weight: normal;
+    text-shadow: 1px 1px 0px #05050547;
+    border: transparent;
+}
+
+.infoP:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+}
+
+.infoP h3 {
+    font-size: 1.2rem;
+    color: #333;
+    margin-bottom: 10px;
+}
+
+.infoP p {
+    font-size: 1rem;
+    margin: 5px 0;
+}
+
+.label {
+    font-weight: bolder;
+}
+
+.container form.table {
+    position: relative;
+    height: 100%;
+    display: grid;
+    grid-template-columns: 1fr 2fr;  /* Duas colunas com largura igual */
+    padding: 0 20px;
+    justify-content: center;
+    align-items: center;
+}
+
+
+.back-button {
+    margin: 0 auto;
+    width: 100%;
+    position: absolute;
+    text-align: center;
+    top: 0;
+    padding: 3rem;
+}
+

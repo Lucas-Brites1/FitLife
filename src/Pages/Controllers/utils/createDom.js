@@ -23,6 +23,11 @@ class createElement{
     return false
   }
 
+  insertText(text) {
+    const currentText = this.#element_created.innerText;  
+    this.#element_created.innerHTML = `<p class="label">${text}</p>` + currentText;  
+  }
+
   getElement() {
     return this.#element_created
   }

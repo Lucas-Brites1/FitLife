@@ -29,8 +29,6 @@ app.use(loggerMiddleware);
 // ..retorna uma resposta de status 503 que significa `Service Unavaible` (serviço indisponível), envia o arquivo html 503.html para ser renderizado e impede que o restante do código seja executado
 app.use(checkDatabaseConnection(DB))
 
-
-
 // Métodos GET que enviam o arquivo estático das paginas especificadas nas urls, exemplo /page/admin irá enviar o admin.html
 app.get("/", (req, res) => {
   return res.sendFile(PATH.join(__dirname, "../Pages/buscar.html"))
@@ -94,6 +92,19 @@ app.get("/cliente/report/:cpf", async (req, res) => {
     const returnValue = await DB.getReport(CPF);
     const client = returnValue.info
     if(!client) verifyAndHandleErrors(returnValue, true)
+    verifyAndHandleErrors(returnValue, false)
+    return res.status(returnValue.statusCode).json(client)
+  } catch(err) {
+    return res.status(err.statusCode || 500).send(err.message ||"Erro interno do servidor")
+  }
+})
+
+app.get("/cliente/:cpf", async (req, res) => {
+  const CPF = req.params.cpf;
+  try {
+    const returnValue = await DB.searchClient(CPF)
+    const client = returnValue.info
+    if (!client) verifyAndHandleErrors(returnValue, true)
     verifyAndHandleErrors(returnValue, false)
     return res.status(returnValue.statusCode).json(client)
   } catch(err) {

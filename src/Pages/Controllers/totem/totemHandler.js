@@ -1,6 +1,8 @@
 import { get } from "/Controllers/utils/getInfo.js"; // Importa funções para obter informações dos campos do formulário
-let btnEntradaSaida = get("btn-entrada-saida", "class")
+import { formatCPF } from "/Controllers/utils/formatData.js";
 
+let btnEntradaSaida = get("btn-entrada-saida", "class")
+formatCPF(get("input-busca-aluno", "id"))
 btnEntradaSaida.addEventListener("click", async (ev) => {
   ev.preventDefault()
   const cpfAluno = get("input-busca-aluno", "id").value
