@@ -1,5 +1,4 @@
 const express = require("express");
-const cors = require("cors");
 const dotenv = require("dotenv");
 const PATH = require("node:path");
 dotenv.config({ path: PATH.resolve(__dirname, "../.env") });
@@ -18,7 +17,6 @@ const PORT = process.env.PORT || 5000;
 const DB = database;
 
 // Middlewares da API
-app.use(cors());
 app.use(express.json()); // Garante que o corpo de uma requisição post seja transformado em um objeto JavaScript que pode ser facilmente manipulado
 // Middleware responsável por servir arquivos estáticos (como HTML, CSS, imagens) da pasta "../Pages".
 // Isso permite que o Express sirva arquivos diretamente para o cliente sem necessidade de lógica adicional.

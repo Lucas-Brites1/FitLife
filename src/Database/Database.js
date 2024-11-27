@@ -165,7 +165,7 @@ class Database {
         return this.databaseReturn(400, null, "Cliente não encontrado.");
       }
       
-      console.log(client.in)
+      console.log(client.id)
 
       const today = new Date();
       const formattedDate = formatDate(today);
@@ -180,7 +180,7 @@ class Database {
 
       if (lastRecord && !lastRecord.horario_saida) {
         await lastRecord.update({ horario_saida: new Date().getHours() });
-
+        // SELECT * FROM Relatorios WHERE cliente = 'client_info_id';
         const reportSearch = await Relatorio.findAll({ where: { cliente: client.info.id } });
         if (reportSearch.length === 0) {
           await Relatorio.create({
