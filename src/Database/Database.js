@@ -80,16 +80,19 @@ class Database {
   async getReportsForEveryClient() {
     try {
       const allClientsReports = await Cliente.findAll({
-        // INNER JOIN
         include: {
           model: Relatorio,
-          required: true // só retorna caso o cliente tenha algum Relatorio vinculado
-        }
+          required: true, // só retorna clientes com Relatório vinculado
+        },
+        order: [
+          // Ordenar pela coluna "frequencia_total" da tabela "Relatorio" de forma decrescente
+          [Relatorio, "frequencia_total", "DESC"]
+        ],
       });
-      return this.databaseReturn(200, allClientsReports, "Relatórios dos clientes obtidos com sucesso!")
-    } catch(err) {
-      console.error("Erro ao obter relatórios dos clientes:", err); 
-      return this.databaseReturn(500, null, "Algo deu errado na tentativa de obter os relatórios dos clientes.")
+      return this.databaseReturn(200, allClientsReports, "Relatórios dos clientes obtidos com sucesso!");
+    } catch (err) {
+      console.error("Erro ao obter relatórios dos clientes:", err);
+      return this.databaseReturn(500, null, "Algo deu errado na tentativa de obter os relatórios dos clientes.");
     }
   }
 
@@ -192,7 +195,7 @@ class Database {
         } else {
           await Relatorio.update(
             {
-              classificacao: setCategory(weekTimeSpent),
+              classificacao: setCategory(totalTimeSpent),
               frequencia_total: totalTimeSpent,
               frequencia_semanal: weekTimeSpent,
             },
