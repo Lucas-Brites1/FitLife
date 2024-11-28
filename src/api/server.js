@@ -127,7 +127,7 @@ app.post("/clientes/totem/submit", async(req, res) => {
     const returnValue = await DB.acessControl(cpf)
     verifyAndHandleErrors(returnValue, false)
     return res.status(returnValue.statusCode).send(returnValue.message)
-  } catch(err) {
+  } catch (err) {
     return res.status(err.statusCode || 500).send(err.message ||"Erro interno do servidor")
   }
 })
