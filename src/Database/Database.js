@@ -195,7 +195,7 @@ class Database {
         } else {
           await Relatorio.update(
             {
-              classificacao: setCategory(totalTimeSpent),
+              classificacao: setCategory(weekTimeSpent),
               frequencia_total: totalTimeSpent,
               frequencia_semanal: weekTimeSpent,
             },
