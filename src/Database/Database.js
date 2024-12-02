@@ -86,7 +86,7 @@ class Database {
         },
         order: [
           // Ordenar pela coluna "frequencia_total" da tabela "Relatorio" de forma decrescente
-          [Relatorio, "frequencia_total", "DESC"]
+          [Relatorio, "frequencia_semanal", "DESC"]
         ],
       });
       return this.databaseReturn(200, allClientsReports, "Relatórios dos clientes obtidos com sucesso!");
@@ -146,7 +146,7 @@ class Database {
           },
         },
       });
-
+     
       let calculatedTime = 0;
       for (let i = 0; i < weekDates.length; i++) {
         const record = weekDates[i];
@@ -171,19 +171,21 @@ class Database {
       console.log(client.id)
 
       const today = new Date();
-      const formattedDate = formatDate(today);
+      const formattedDate = formatDate(today); // 01-12-2024
 
       const lastRecord = await Totem.findOne({
         where: { cliente: client.info.id },
         order: [["createdAt", "DESC"]],
       });
 
-      const weekTimeSpent = await this.calculateWeekTrainingTime(formattedDate, client);
-      const totalTimeSpent = await this.calculateTotalTrainingTime(client);
 
       if (lastRecord && !lastRecord.horario_saida) {
         await lastRecord.update({ horario_saida: new Date().getHours() });
         // SELECT * FROM Relatorios WHERE cliente = 'client_info_id';
+        
+        const weekTimeSpent = await this.calculateWeekTrainingTime(formattedDate, client);
+        const totalTimeSpent = await this.calculateTotalTrainingTime(client);
+
         const reportSearch = await Relatorio.findAll({ where: { cliente: client.info.id } });
         if (reportSearch.length === 0) {
           await Relatorio.create({
@@ -234,7 +236,7 @@ class Database {
     }
     try {
       const cliente = await Cliente.findOne({ where: { cpf } });
-      if (!cliente) {
+      if (!cliente) { 
         return this.databaseReturn(404, null, "Cliente não encontrado.");
       }
 

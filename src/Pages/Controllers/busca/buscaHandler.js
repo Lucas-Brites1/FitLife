@@ -6,7 +6,6 @@ import { calcularIMC, calcularTMB } from "/Controllers/utils/imc_tmb.js";
 
 Redirect(get("search-btn", "id"), "http://localhost:8989/page/cadastro");
 
-
 const inputSearch = get("input-busca-aluno", "id");
 formatCPF(inputSearch);
 
@@ -102,9 +101,7 @@ function renderClientDetailsAndReport(clientInfo, report, container) {
     new createElement("p", [`info-p-${className}`, "infoP"], value)
       .renderElement(detailDiv)
       .insertText(label);
-  });
-
- 
+  }); 
 }
 
 function formatAltura(altura) {
