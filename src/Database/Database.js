@@ -85,7 +85,7 @@ class Database {
           required: true, // só retorna clientes com Relatório vinculado
         },
         order: [
-          // Ordenar pela coluna "frequencia_total" da tabela "Relatorio" de forma decrescente
+          // Ordenar pela coluna "frequencia_semanal" da tabela "Relatorio" de forma decrescente
           [Relatorio, "frequencia_semanal", "DESC"]
         ],
       });
@@ -168,8 +168,6 @@ class Database {
         return this.databaseReturn(400, null, "Cliente não encontrado.");
       }
       
-      console.log(client.id)
-
       const today = new Date();
       const formattedDate = formatDate(today); // 01-12-2024
 
@@ -178,14 +176,15 @@ class Database {
         order: [["createdAt", "DESC"]],
       });
 
+      
 
       if (lastRecord && !lastRecord.horario_saida) {
         await lastRecord.update({ horario_saida: new Date().getHours() });
-        // SELECT * FROM Relatorios WHERE cliente = 'client_info_id';
-        
-        const weekTimeSpent = await this.calculateWeekTrainingTime(formattedDate, client);
-        const totalTimeSpent = await this.calculateTotalTrainingTime(client);
 
+        const weekTimeSpent = await this.calculateWeekTrainingTime(formattedDate, client); 
+        const totalTimeSpent = await this.calculateTotalTrainingTime(client); 
+        
+        // SELECT * FROM Relatorios WHERE cliente = 'client_info_id';
         const reportSearch = await Relatorio.findAll({ where: { cliente: client.info.id } });
         if (reportSearch.length === 0) {
           await Relatorio.create({
